@@ -40,6 +40,20 @@ class Router
 
     public function renderView($view)
     {
-        include_once __DIR__ . "/../Views/".$view.".php";
+        $main = $this->layoutContent();
+        $view = $this->view_to_string(Application::$rootpath . "/Views/$view.php");
+        return str_replace('{{content}}' , $view , $main);
+    }
+
+    protected function layoutContent()
+    {
+        return  $this->view_to_string(Application::$rootpath . '/Views/layouts/layout.php');
+    }
+
+    public function view_to_string($viewPath)
+    {
+        ob_start();
+        include_once $viewPath;
+        return ob_get_clean();
     }
 }
