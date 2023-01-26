@@ -4,7 +4,7 @@ namespace App\core;
 
 class Router
 {
-    protected array $routes = [];
+    protected static array $routes = [];
     public Request $request;
     public Response $response;
 
@@ -14,16 +14,11 @@ class Router
         $this->response = $response;
     }
 
-    public function get($path , $callback)
-    {
-        $this->routes['get'][$path] = $callback;
-    }
-
     public function resolve()
     {
         $path = $this->request->getPath();
         $method = $this->request->getMethod();
-        $callback = $this->routes[$method][$path] ?? false;
+        $callback = self::$routes[$method][$path] ?? false;
 
         if(is_string($callback))
         {
@@ -58,5 +53,15 @@ class Router
         ob_start();
         include_once $viewPath;
         return ob_get_clean();
+    }
+
+    public static function get($path , $callback)
+    {
+        self::$routes['get'][$path] = $callback;
+    }
+
+    public static function post($path , $callback)
+    {
+        self::$routes['post'][$path] = $callback;
     }
 }
